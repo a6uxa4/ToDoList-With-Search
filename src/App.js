@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
+import './App.css'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [data, setData] = useState([])
+	const [value, setValue] = useState('')
+	const [valueSearch, setValueSearch] = useState('')
+
+	function handleClick() {
+		if (!value.trim()) return null
+		setData([...data, { title: value, id: Math.random().toString() }])
+		setValue('')
+	}
+
+	const filteredTodos = data.filter((todo) =>
+		todo.title.toLowerCase().includes(valueSearch.toLowerCase()),
+	)
+
+	function handleDelete(id) {
+		setData(data.filter((item) => item.id !== id))
+	}
+	return (
+		<div className='Container'>
+			<input
+				className='InputSearch'
+				type='search'
+				onChange={(e) => setValueSearch(e.target.value)}
+			/>
+			<div className='Header'>
+				<input
+					className='InputAdd'
+					onChange={(e) => setValue(e.target.value)}
+					value={value}
+				/>
+				<button className='ButtonAdd' onClick={() => handleClick()}>
+					Add
+				</button>
+			</div>
+			<div>
+				{filteredTodos.map((item) => {
+					return (
+						<div key={item.id} className='List'>
+							<span>{item.title}</span>
+							<button
+								onClick={() => handleDelete(item.id)}
+								className='DeleteButton'>
+								Delete
+							</button>
+						</div>
+					)
+				})}
+			</div>
+		</div>
+	)
 }
 
-export default App;
+export default App
